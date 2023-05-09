@@ -1,15 +1,5 @@
 const ALLOWED_COMMANDS = ["commit"];
 
-class Commit {
-  id: string;
-  message?: string;
-
-  constructor(id: string, message?: string) {
-    this.id = id;
-    this.message = message;
-  }
-}
-
 function execute(command: string): boolean {
   if (!command) return false;
 

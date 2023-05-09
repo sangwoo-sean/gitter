@@ -3,11 +3,27 @@ import styled from "styled-components";
 import { useState } from "react";
 import execute from "./git";
 
+class Commit {
+  id: number;
+  message?: string;
+
+  constructor(id: number, message?: string) {
+    this.id = id;
+    this.message = message;
+  }
+}
+
+let count = 3;
+
 function App() {
-  const [input, setInput] = useState<string>("");
-  const [history, setHistory] = useState<Array<string>>([]);
+  const [input, setInput] = useState<string>(""); //todo: useRef 로 변경
+  const [commandHistory, setCommandHistory] = useState<Array<string>>(['git commit -m "asd"', 'git commit -m "123"', 'git commit -m "qwe"']);
+  const [commitHistory, setCommitHistory] = useState<Array<Commit>>([
+    { id: 1, message: "asd" },
+    { id: 2, message: "123" },
+    { id: 3, message: "qwe" }
+  ]);
   const [isValidCommand, setIsValidCommand] = useState<boolean>(true);
-  const [count, setCount] = useState<number>(1);
 
   function onChange(event: React.ChangeEvent<HTMLInputElement>) {
     setInput(event.target.value);
@@ -19,7 +35,7 @@ function App() {
 
       setIsValidCommand(valid);
       if (valid) {
-        setHistory((history) => [...history, input]);
+        setCommitHistory((history) => [...history, new Commit(count++, input)]); //todo: input 이 아니라 메세지만 입력하도록
 
         setInput("");
       }
@@ -30,22 +46,17 @@ function App() {
     <AppWrapper>
       <h1>Hello</h1>
       <div>
-        <div className="commit">
-          <span>4</span>
-        </div>
-        <div className="commit">
-          <span>3</span>
-        </div>
-        <div className="commit">
-          <span>2</span>
-        </div>
-        <div className="commit">
-          <span>1</span>
-        </div>
+        {[...commitHistory].reverse().map((commit) => (
+          <div className="commit" key={commit.id}>
+            <span>
+              {commit.id} {commit.message}
+            </span>
+          </div>
+        ))}
       </div>
       <div style={{ position: "relative" }}>
         <ul>
-          {history.map((command, index) => (
+          {commandHistory.map((command, index) => (
             <li key={index}>{command}</li>
           ))}
         </ul>
