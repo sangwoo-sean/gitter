@@ -13,16 +13,12 @@ class Commit {
   }
 }
 
-let count = 3;
+let count = 0;
 
 function App() {
   const [input, setInput] = useState<string>(""); //todo: useRef 로 변경
-  const [commandHistory, setCommandHistory] = useState<Array<string>>(['git commit -m "asd"', 'git commit -m "123"', 'git commit -m "qwe"']);
-  const [commitHistory, setCommitHistory] = useState<Array<Commit>>([
-    { id: 1, message: "asd" },
-    { id: 2, message: "123" },
-    { id: 3, message: "qwe" }
-  ]);
+  const [commandHistory, setCommandHistory] = useState<Array<string>>([]);
+  const [commitHistory, setCommitHistory] = useState<Array<Commit>>([{ id: 0, message: "" }]);
   const [isValidCommand, setIsValidCommand] = useState<boolean>(true);
 
   function onChange(event: React.ChangeEvent<HTMLInputElement>) {
@@ -31,13 +27,15 @@ function App() {
 
   function onKeyDown(event: React.KeyboardEvent<HTMLInputElement>) {
     if (event.key === "Enter") {
-      const valid = execute(input);
+      const { valid, message } = execute(input);
 
       setIsValidCommand(valid);
       if (valid) {
-        setCommitHistory((history) => [...history, new Commit(count++, input)]); //todo: input 이 아니라 메세지만 입력하도록
+        setCommitHistory((history) => [...history, new Commit(count, message)]);
+        setCommandHistory((history) => [...history, input]);
 
         setInput("");
+        count += 1;
       }
     }
   }
