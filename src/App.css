@@ -31,3 +31,9 @@
 .commit > span {
   margin-left: 25px;
 }
+
+ul {
+  list-style: "> ";
+  padding: 1rem;
+  margin: 0;
+}

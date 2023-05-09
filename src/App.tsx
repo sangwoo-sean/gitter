@@ -43,14 +43,14 @@ function App() {
           <span>1</span>
         </div>
       </div>
-      <div>
+      <div style={{ position: "relative" }}>
         <ul>
           {history.map((command, index) => (
             <li key={index}>{command}</li>
           ))}
         </ul>
         <input type="text" value={input} onChange={onChange} onKeyDown={onKeyDown} />
-        <ErrorText style={{ display: isValidCommand ? "none" : "inline" }}>올바르지 않은 명령어입니다.</ErrorText>
+        <ErrorText style={{ display: isValidCommand ? "none" : "block" }}>올바르지 않은 명령어입니다.</ErrorText>
       </div>
     </AppWrapper>
   );
@@ -66,6 +66,7 @@ const AppWrapper = styled.div`
 
 const ErrorText = styled.span`
   color: red;
+  position: absolute;
 `;
 
 export default App;
