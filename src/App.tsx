@@ -13,13 +13,12 @@ class Commit {
   }
 }
 
-let count = 0;
-
 function App() {
   const [input, setInput] = useState<string>(""); //todo: useRef 로 변경
   const [commandHistory, setCommandHistory] = useState<Array<string>>([]);
   const [commitHistory, setCommitHistory] = useState<Array<Commit>>([{ id: 0, message: "" }]);
   const [isValidCommand, setIsValidCommand] = useState<boolean>(true);
+  const [errorMessage, setErrorMessage] = useState<string>("올바르지 않은 명령어입니다.");
 
   function onChange(event: React.ChangeEvent<HTMLInputElement>) {
     setInput(event.target.value);
@@ -27,15 +26,16 @@ function App() {
 
   function onKeyDown(event: React.KeyboardEvent<HTMLInputElement>) {
     if (event.key === "Enter") {
-      const { valid, message } = execute(input);
+      const { valid, message, error_message } = execute(input);
 
       setIsValidCommand(valid);
       if (valid) {
-        setCommitHistory((history) => [...history, new Commit(count, message)]);
+        setCommitHistory((history) => [...history, new Commit(commitHistory.length, message)]);
         setCommandHistory((history) => [...history, input]);
 
         setInput("");
-        count += 1;
+      } else {
+        setErrorMessage(error_message);
       }
     }
   }
@@ -59,7 +59,7 @@ function App() {
           ))}
         </ul>
         <input type="text" value={input} onChange={onChange} onKeyDown={onKeyDown} />
-        <ErrorText style={{ display: isValidCommand ? "none" : "block" }}>올바르지 않은 명령어입니다.</ErrorText>
+        <ErrorText style={{ display: isValidCommand ? "none" : "block" }}>{errorMessage}</ErrorText>
       </div>
     </AppWrapper>
   );
@@ -76,6 +76,7 @@ const AppWrapper = styled.div`
 const ErrorText = styled.span`
   color: red;
   position: absolute;
+  white-space: nowrap;
 `;
 
 export default App;
