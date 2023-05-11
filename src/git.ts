@@ -34,11 +34,13 @@ function execute(command: string): executeResult {
         message = options[message_index].replaceAll('"', "");
       }
     }
-  }
 
-  //명령어(2번째거)가 commit 일때 뒤의 옵션들을 모두 가져와서
-  // --amend 옵션이 있는지확인후
-  // 옵션이 있다면 prompt() 로 새로운 메세지 입력받아서 메세지 수정하기
+    if (options.includes("--amend")) {
+      const new_message = prompt("마지막 커밋에 대해 수정할 메세지를 입력하세요");
+      console.log(new_message);
+      // amend 면 커밋이 쌓이는게 아니라 마지막 커밋에 대해 수정해야함.
+    }
+  }
 
   return { valid, message, error_message };
 }
