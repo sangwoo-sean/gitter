@@ -15,7 +15,7 @@
 # Contents
 
 - git commit -m "message"
-- git commit --amend "message"
+- git commit --amend
 - git commit --amend --no-edit
 - git branch [branch]
 - git checkout [branch]
