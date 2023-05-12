@@ -20,6 +20,7 @@ function App() {
   const [commitHistory, setCommitHistory] = useState<Array<Commit>>([new Commit(0, "")]);
   const [isValidCommand, setIsValidCommand] = useState<boolean>(true);
   const [errorMessage, setErrorMessage] = useState<string | undefined>("올바르지 않은 명령어입니다.");
+  const [head, setHead] = useState<number>(0);
 
   function onChange(event: React.ChangeEvent<HTMLInputElement>) {
     setInput(event.target.value);
@@ -55,6 +56,7 @@ function App() {
         const message = result.message?.replace(/^"|"$/g, "");
         setCommitHistory((history) => [...history, new Commit(commitHistory.length, message)]);
         setInput("");
+        setHead((head) => head + 1);
       } else if (result.status === "amend_history") {
         setCommitHistory((history) => {
           const last_history = history[history.length - 1];
@@ -74,10 +76,10 @@ function App() {
       <h1>Hello</h1>
       <div>
         {[...commitHistory].reverse().map((commit) => (
-          <div className="commit" key={commit.id}>
-            <span>
-              {commit.id} {commit.message}
-            </span>
+          <div className="commit" key={commit.id} style={{ position: "relative" }}>
+            {commit.id === head && <HeadIndicator>head→</HeadIndicator>}
+            <CommitId>{commit.id}</CommitId>
+            <CommitMessage>{commit.message}</CommitMessage>
           </div>
         ))}
       </div>
@@ -106,6 +108,19 @@ const ErrorText = styled.span`
   color: red;
   position: absolute;
   white-space: nowrap;
+`;
+
+const HeadIndicator = styled.div`
+  position: absolute;
+  right: 50px;
+`;
+
+const CommitId = styled.span`
+  margin-left: -20px;
+`;
+
+const CommitMessage = styled.span`
+  margin-left: 40px;
 `;
 
 export default App;
