@@ -1,6 +1,7 @@
 import "./App.css";
 import styled from "styled-components";
 import { useState } from "react";
+import execute from "./git";
 
 class Commit {
   id: number;
@@ -18,7 +19,7 @@ function App() {
   const [commandHistory, setCommandHistory] = useState<Array<string>>([]);
   const [commitHistory, setCommitHistory] = useState<Array<Commit>>([new Commit(0, "")]);
   const [isValidCommand, setIsValidCommand] = useState<boolean>(true);
-  const [errorMessage, setErrorMessage] = useState<string>("올바르지 않은 명령어입니다.");
+  const [errorMessage, setErrorMessage] = useState<string | undefined>("올바르지 않은 명령어입니다.");
 
   function onChange(event: React.ChangeEvent<HTMLInputElement>) {
     setInput(event.target.value);
@@ -26,57 +27,44 @@ function App() {
 
   function onKeyDown(event: React.KeyboardEvent<HTMLInputElement>) {
     if (event.key === "Enter" && input) {
-      let valid = true;
-      let message: string | undefined;
-      let error_message = "올바르지 않은 명령어입니다.";
-
-      if (!input) valid = false;
-
       const args = input.split(" ");
-      if (args.length < 3) valid = false;
+      if (args.length < 2) {
+        setIsValidCommand(false);
+        return;
+      }
 
       const [GIT, operation, ...options] = args;
 
-      if (GIT !== "git") valid = false;
-
-      if (!ALLOWED_COMMANDS.includes(operation)) valid = false;
-
-      if (operation === "commit") {
-        if (options.includes("-m")) {
-          const index = options.indexOf("-m");
-          const message_index = index + 1;
-
-          if (options.length < message_index + 1) {
-            valid = false;
-            error_message = "커밋 메세지를 입력하세요";
-          } else {
-            message = options[message_index].replaceAll('"', "");
-            setCommitHistory((history) => [...history, new Commit(commitHistory.length, message)]);
-          }
-        }
-
-        if (options.includes("--amend")) {
-          const new_message = prompt("마지막 커밋에 대해 수정할 메세지를 입력하세요");
-
-          if (!new_message) {
-            error_message = "amend 가 중단되었습니다.";
-            valid = false;
-          } else {
-            setCommitHistory((history) => {
-              const last_history = history[history.length - 1];
-              last_history.message = new_message;
-              return [...history];
-            });
-          }
-        }
+      if (GIT !== "git") {
+        setIsValidCommand(false);
+        return;
       }
 
-      setIsValidCommand(valid);
-      if (valid) {
+      if (!ALLOWED_COMMANDS.includes(operation)) {
+        setIsValidCommand(false);
+        return;
+      }
+
+      const result = execute(operation, options);
+
+      setIsValidCommand(true);
+      if (result.status === "success") {
         setCommandHistory((history) => [...history, input]);
         setInput("");
-      } else {
-        setErrorMessage(error_message);
+      } else if (result.status === "add_history") {
+        const message = result.message?.replace(/^"|"$/g, "");
+        setCommitHistory((history) => [...history, new Commit(commitHistory.length, message)]);
+        setInput("");
+      } else if (result.status === "amend_history") {
+        setCommitHistory((history) => {
+          const last_history = history[history.length - 1];
+          last_history.message = result.message;
+          return [...history];
+        });
+        setInput("");
+      } else if (result.status === "fail") {
+        setErrorMessage(result.error_message);
+        setIsValidCommand(false);
       }
     }
   }
