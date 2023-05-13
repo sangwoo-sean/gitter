@@ -12,15 +12,15 @@ class Commit {
     this.message = message;
   }
 }
-const ALLOWED_COMMANDS = ["commit"];
+const ALLOWED_COMMANDS = ["commit", "checkout"];
 
 function App() {
   const [input, setInput] = useState<string>(""); //todo: useRef 로 변경
   const [commandHistory, setCommandHistory] = useState<Array<string>>([]);
-  const [commitHistory, setCommitHistory] = useState<Array<Commit>>([new Commit(0, "")]);
+  const [commitHistory, setCommitHistory] = useState<Array<Commit>>([new Commit(0, ""), new Commit(1, "first"), new Commit(2, "second")]);
   const [isValidCommand, setIsValidCommand] = useState<boolean>(true);
   const [errorMessage, setErrorMessage] = useState<string | undefined>("올바르지 않은 명령어입니다.");
-  const [head, setHead] = useState<number>(0);
+  const [head, setHead] = useState<number>(2);
 
   function onChange(event: React.ChangeEvent<HTMLInputElement>) {
     setInput(event.target.value);
@@ -63,6 +63,9 @@ function App() {
           last_history.message = result.message;
           return [...history];
         });
+        setInput("");
+      } else if (result.status === "checkout") {
+        if (result.commit !== undefined) setHead(result.commit);
         setInput("");
       } else if (result.status === "fail") {
         setErrorMessage(result.error_message);

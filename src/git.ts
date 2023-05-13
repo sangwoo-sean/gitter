@@ -2,6 +2,7 @@ interface executeResult {
   status: string;
   message?: string;
   error_message?: string;
+  commit?: number;
 }
 
 function execute(operation: string, options: Array<string>): executeResult {
@@ -26,6 +27,12 @@ function execute(operation: string, options: Array<string>): executeResult {
 
       return { status: "amend_history", message: new_message };
     }
+  } else if (operation === "checkout") {
+    if (options.length !== 1 || isNaN(Number(options[0]))) {
+      return { status: "fail", error_message: "올바르지 않은 명령어입니다." };
+    }
+
+    return { status: "checkout", commit: Number(options) };
   }
 
   return { status: "fail", error_message: "올바르지 않은 명령어입니다." };
