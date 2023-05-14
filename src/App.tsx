@@ -17,10 +17,10 @@ const ALLOWED_COMMANDS = ["commit", "checkout"];
 function App() {
   const [input, setInput] = useState<string>(""); //todo: useRef 로 변경
   const [commandHistory, setCommandHistory] = useState<Array<string>>([]);
-  const [commitHistory, setCommitHistory] = useState<Array<Commit>>([new Commit(0, ""), new Commit(1, "first"), new Commit(2, "second")]);
+  const [commitHistory, setCommitHistory] = useState<Array<Commit>>([new Commit(0, "")]);
   const [isValidCommand, setIsValidCommand] = useState<boolean>(true);
   const [errorMessage, setErrorMessage] = useState<string | undefined>("올바르지 않은 명령어입니다.");
-  const [head, setHead] = useState<number>(2);
+  const [head, setHead] = useState<number>(0);
 
   function onChange(event: React.ChangeEvent<HTMLInputElement>) {
     setInput(event.target.value);
@@ -49,27 +49,27 @@ function App() {
       const result = execute(operation, options);
 
       setIsValidCommand(true);
-      if (result.status === "success") {
-        setCommandHistory((history) => [...history, input]);
-        setInput("");
-      } else if (result.status === "add_history") {
-        const message = result.message?.replace(/^"|"$/g, "");
-        setCommitHistory((history) => [...history, new Commit(commitHistory.length, message)]);
-        setInput("");
-        setHead((head) => head + 1);
-      } else if (result.status === "amend_history") {
-        setCommitHistory((history) => {
-          const last_history = history[history.length - 1];
-          last_history.message = result.message;
-          return [...history];
-        });
-        setInput("");
-      } else if (result.status === "checkout") {
-        if (result.commit !== undefined) setHead(result.commit);
-        setInput("");
-      } else if (result.status === "fail") {
+      if (result.status === "fail") {
         setErrorMessage(result.error_message);
         setIsValidCommand(false);
+      } else {
+        if (result.status === "success") {
+          //nothing
+        } else if (result.status === "add_history") {
+          const message = result.message?.replace(/^"|"$/g, "");
+          setHead((head) => head + 1);
+          setCommitHistory((history) => [...history, new Commit(commitHistory.length, message)]);
+        } else if (result.status === "amend_history") {
+          setCommitHistory((history) => {
+            const last_history = history[history.length - 1];
+            last_history.message = result.message;
+            return [...history];
+          });
+        } else if (result.status === "checkout") {
+          if (result.commit !== undefined) setHead(result.commit);
+        }
+        setCommandHistory((history) => [...history, input]);
+        setInput("");
       }
     }
   }
