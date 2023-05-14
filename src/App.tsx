@@ -23,7 +23,7 @@ class Branch {
   }
 }
 
-const ALLOWED_COMMANDS = ["commit", "checkout"];
+const ALLOWED_COMMANDS = ["commit", "checkout", "branch"];
 const INITIAL_COMMIT = new Commit(0, "");
 
 function App() {
@@ -80,6 +80,14 @@ function App() {
           });
         } else if (result.status === "checkout") {
           if (result.commit !== undefined) setHead(result.commit);
+        } else if (result.status === "add_branch") {
+          const branch_name = result.name;
+          if (!branch_name) throw new Error("올바르지 않은 브랜치 이름입니다.");
+
+          const current_commit = commitHistory.find((commit) => commit.id === head);
+          if (!current_commit) throw new Error("HEAD를 찾을 수 없습니다.");
+
+          setBranches([...branches, new Branch(branch_name, current_commit)]);
         }
         setCommandHistory((history) => [...history, input]);
         setInput("");
@@ -139,6 +147,7 @@ const HeadIndicator = styled.div`
 const BranchWrapper = styled.div`
   position: absolute;
   right: 150px;
+  white-space: nowrap;
 `;
 
 const CommitId = styled.span`

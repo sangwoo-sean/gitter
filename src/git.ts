@@ -3,6 +3,7 @@ interface executeResult {
   message?: string;
   error_message?: string;
   commit?: number;
+  name?: string;
 }
 
 function execute(operation: string, options: Array<string>): executeResult {
@@ -33,6 +34,12 @@ function execute(operation: string, options: Array<string>): executeResult {
     }
 
     return { status: "checkout", commit: Number(options) };
+  } else if (operation === "branch") {
+    if (options.length !== 1) {
+      return { status: "fail", error_message: "올바르지 않은 명령어입니다." };
+    }
+
+    return { status: "add_branch", name: options[0] };
   }
 
   return { status: "fail", error_message: "올바르지 않은 명령어입니다." };
