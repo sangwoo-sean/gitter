@@ -12,12 +12,25 @@ class Commit {
     this.message = message;
   }
 }
+
+class Branch {
+  name: string;
+  base: Commit;
+
+  constructor(name: string, base: Commit) {
+    this.name = name;
+    this.base = base;
+  }
+}
+
 const ALLOWED_COMMANDS = ["commit", "checkout"];
+const INITIAL_COMMIT = new Commit(0, "");
 
 function App() {
   const [input, setInput] = useState<string>(""); //todo: useRef 로 변경
   const [commandHistory, setCommandHistory] = useState<Array<string>>([]);
-  const [commitHistory, setCommitHistory] = useState<Array<Commit>>([new Commit(0, "")]);
+  const [commitHistory, setCommitHistory] = useState<Array<Commit>>([INITIAL_COMMIT]);
+  const [branches, setBranches] = useState<Array<Branch>>([new Branch("master", INITIAL_COMMIT)]);
   const [isValidCommand, setIsValidCommand] = useState<boolean>(true);
   const [errorMessage, setErrorMessage] = useState<string | undefined>("올바르지 않은 명령어입니다.");
   const [head, setHead] = useState<number>(0);
