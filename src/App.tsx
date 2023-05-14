@@ -91,13 +91,18 @@ function App() {
     <AppWrapper>
       <h1>Hello</h1>
       <div>
-        {[...commitHistory].reverse().map((commit) => (
-          <div className="commit" key={commit.id} style={{ position: "relative" }}>
-            {commit.id === head && <HeadIndicator>head→</HeadIndicator>}
-            <CommitId>{commit.id}</CommitId>
-            <CommitMessage>{commit.message}</CommitMessage>
-          </div>
-        ))}
+        {[...commitHistory].reverse().map((commit) => {
+          const branchesOnCommit = branches.filter((branch) => branch.base === commit);
+          const branchesDisplay = branchesOnCommit.map((branch) => branch.name).join(", ");
+          return (
+            <div className="commit" key={commit.id} style={{ position: "relative" }}>
+              <BranchWrapper>{branchesDisplay}</BranchWrapper>
+              {commit.id === head && <HeadIndicator>head→</HeadIndicator>}
+              <CommitId>{commit.id}</CommitId>
+              <CommitMessage>{commit.message}</CommitMessage>
+            </div>
+          );
+        })}
       </div>
       <div style={{ position: "relative" }}>
         <ul>
@@ -129,6 +134,11 @@ const ErrorText = styled.span`
 const HeadIndicator = styled.div`
   position: absolute;
   right: 50px;
+`;
+
+const BranchWrapper = styled.div`
+  position: absolute;
+  right: 150px;
 `;
 
 const CommitId = styled.span`
