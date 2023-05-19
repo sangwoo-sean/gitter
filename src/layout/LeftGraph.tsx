@@ -32,7 +32,9 @@ export default function LeftGraph() {
             </tr>
             <tr>
               <StyledTd>
-                <Commit toTop={true}>1</Commit>
+                <Commit toTop={true} branches={["HEAD", "main"]}>
+                  1
+                </Commit>
               </StyledTd>
               <StyledTd></StyledTd>
             </tr>
