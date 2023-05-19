@@ -1,11 +1,19 @@
 import styled from "styled-components";
 
-export default function Footer() {
+interface FooterProps {
+  level: number;
+  levelUp: () => void;
+  levelDown: () => void;
+}
+
+export default function Footer(props: FooterProps) {
+  const { level, levelUp, levelDown } = props;
+
   return (
     <Styled>
-      <StyledButton>&lt;</StyledButton>
-      <LevelIndicator>1</LevelIndicator>
-      <StyledButton>&gt;</StyledButton>
+      <StyledButton onClick={levelDown}>&lt;</StyledButton>
+      <LevelIndicator>{level}</LevelIndicator>
+      <StyledButton onClick={levelUp}>&gt;</StyledButton>
     </Styled>
   );
 }

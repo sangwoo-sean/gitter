@@ -21,14 +21,20 @@ const modalStyle = {
   }
 };
 
+const MAX_LEVEL = 3;
+
 export default function App2() {
+  const [level, setLevel] = useState<number>(1);
   const [modalShow, setModalShow] = useState<boolean>(false);
+
+  const levelUp = () => setLevel((level) => Math.min(MAX_LEVEL, level + 1));
+  const levelDown = () => setLevel((level) => Math.max(level - 1, 1));
 
   return (
     <Styled>
       <Head />
       <Body />
-      <Footer />
+      <Footer level={level} levelUp={levelUp} levelDown={levelDown} />
       {modalShow && (
         <Modal isOpen={true} contentLabel={"example"} style={modalStyle}>
           <h1>정답입니다!</h1>
