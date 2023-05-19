@@ -1,6 +1,9 @@
+import { useState } from "react";
 import styled from "styled-components";
 
 export default function Lesson() {
+  const [invalid, setInvalid] = useState<boolean>(false);
+
   return (
     <Styled>
       <StyledInstruction>
@@ -11,9 +14,7 @@ export default function Lesson() {
         officia, adipisci eius architecto ratione quo esse? Alias odio recusandae eaque incidunt perspiciatis, dolorum accusamus, quisquam quo vero
         officiis ullam maxime, dolore aut optio iste magnam.
       </StyledInstruction>
-      <div>
-        <span style={{ color: "red" }}>올바르지 않은 명령어입니다</span>
-      </div>
+      <div>{invalid && <span style={{ color: "red" }}>올바르지 않은 명령어입니다</span>}</div>
       <div>
         <StyledInput type="text" style={{ width: "90%" }} />
       </div>
