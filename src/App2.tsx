@@ -1,9 +1,9 @@
 import styled from "styled-components";
+import { useState } from "react";
 import Head from "./layout/Head";
 import Body from "./layout/Body";
 import Footer from "./layout/Footer";
 import Modal from "react-modal";
-import { useState } from "react";
 
 Modal.setAppElement("#root");
 

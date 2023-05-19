@@ -25,8 +25,8 @@ export default function Commit(props: CommitProps) {
         <>
           <StyledCommit>{children}</StyledCommit>
           <StyledBranches>
-            {branches?.map((branch) => (
-              <StyledBranch>{branch}</StyledBranch>
+            {branches?.map((branch, index) => (
+              <StyledBranch key={index}>{branch}</StyledBranch>
             ))}
           </StyledBranches>
         </>
