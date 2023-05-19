@@ -1,8 +1,36 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import styled from "styled-components";
 
+const ALLOWED_COMMANDS = ["commit", "checkout", "branch"];
+
 export default function Lesson() {
+  const input = useRef<HTMLInputElement>(null);
   const [invalid, setInvalid] = useState<boolean>(false);
+
+  const onKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    if (event.key === "Enter" && input.current && input.current.value) {
+      const command = input.current.value;
+
+      const args = command.split(" ");
+      if (args.length < 2) {
+        setInvalid(true);
+        return;
+      }
+
+      const [GIT, operation, ...options] = args;
+
+      if (GIT !== "git") {
+        setInvalid(true);
+        return;
+      }
+
+      if (!ALLOWED_COMMANDS.includes(operation)) {
+        setInvalid(true);
+        return;
+      }
+      setInvalid(false);
+    }
+  };
 
   return (
     <Styled>
@@ -16,7 +44,7 @@ export default function Lesson() {
       </StyledInstruction>
       <div>{invalid && <span style={{ color: "red" }}>올바르지 않은 명령어입니다</span>}</div>
       <div>
-        <StyledInput type="text" style={{ width: "90%" }} />
+        <StyledInput type="text" style={{ width: "90%" }} onKeyDown={onKeyDown} ref={input} />
       </div>
     </Styled>
   );
