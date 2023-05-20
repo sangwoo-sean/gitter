@@ -29,6 +29,12 @@ export default function Lesson() {
         return;
       }
       setInvalid(false);
+
+      if (command === "git commit") {
+        console.log("success");
+      } else {
+        console.log("fail");
+      }
     }
   };
 

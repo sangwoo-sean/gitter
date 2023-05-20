@@ -2,31 +2,39 @@ import styled from "styled-components";
 import LeftGraph from "./LeftGraph";
 import RightGraph from "./RightGraph";
 import Commit from "../components/Commit";
+import { Branch, Commit as CommitCls } from "../util/git";
 
-export default function GitGraph() {
+interface GitGraphProps {
+  leftGraph: Array<Array<CommitCls | null>>;
+  rightGraph: Array<Array<CommitCls | null>>;
+}
+
+export default function GitGraph(props: GitGraphProps) {
+  const { leftGraph, rightGraph } = props;
+
+  const drawCommit = (commit: CommitCls | null) => {
+    if (!commit) return <Commit exist={false} id={null}></Commit>;
+
+    return <Commit branches={commit.branches} id={commit.id}></Commit>;
+  };
+
   return (
     <Styled>
       <LeftGraph>
-        <tr>
-          <StyledTd>
-            <Commit branches={["HEAD", "main"]}>2</Commit>
-          </StyledTd>
-          <StyledTd></StyledTd>
-        </tr>
-        <tr>
-          <StyledTd>
-            <Commit toTop={true}>1</Commit>
-          </StyledTd>
-          <StyledTd></StyledTd>
-        </tr>
+        {leftGraph.reverse().map(([commit_l, commit_r], index) => (
+          <tr key={index}>
+            <StyledTd>{drawCommit(commit_l)}</StyledTd>
+            <StyledTd>{drawCommit(commit_r)}</StyledTd>
+          </tr>
+        ))}
       </LeftGraph>
       <RightGraph>
-        <tr>
-          <StyledTd>
-            <Commit branches={["HEAD", "main"]}>1</Commit>
-          </StyledTd>
-          <StyledTd></StyledTd>
-        </tr>
+        {rightGraph.reverse().map(([commit_l, commit_r], index) => (
+          <tr key={index}>
+            <StyledTd>{drawCommit(commit_l)}</StyledTd>
+            <StyledTd>{drawCommit(commit_r)}</StyledTd>
+          </tr>
+        ))}
       </RightGraph>
     </Styled>
   );

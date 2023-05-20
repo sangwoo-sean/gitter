@@ -1,20 +1,21 @@
 import { styled } from "styled-components";
+import { Branch } from "../util/git";
 
 const BLUE_COLOR = "#7eb6ff";
 const RED_COLOR = "#ff98d2";
 const YELLOW_COLOR = "#fff979";
 
 interface CommitProps {
-  children?: React.ReactNode;
+  id: number | null;
   toTop?: boolean;
   toTopRight?: boolean;
   toTopLeft?: boolean;
   exist?: boolean;
-  branches?: Array<string>;
+  branches?: Array<Branch>;
 }
 
 export default function Commit(props: CommitProps) {
-  const { children, toTop = false, toTopRight = false, toTopLeft = false, exist = true, branches } = props;
+  const { id, toTop = false, toTopRight = false, toTopLeft = false, exist = true, branches } = props;
 
   return (
     <div style={{ position: "relative" }}>
@@ -23,10 +24,10 @@ export default function Commit(props: CommitProps) {
       {toTopLeft && <LineToTopLeft />}
       {exist ? (
         <>
-          <StyledCommit>{children}</StyledCommit>
+          <StyledCommit>{id}</StyledCommit>
           <StyledBranches>
             {branches?.map((branch, index) => (
-              <StyledBranch key={index}>{branch}</StyledBranch>
+              <StyledBranch key={index}>{branch.name}</StyledBranch>
             ))}
           </StyledBranches>
         </>
