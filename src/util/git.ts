@@ -27,12 +27,16 @@ class Branch {
 }
 
 class Head {
-  row: number;
-  col: number;
+  currentCommit?: Commit;
+  currentBranch?: Branch;
 
-  constructor(row: number, col: number) {
-    this.row = row;
-    this.col = col;
+  checkoutToBranch(branch: Branch) {
+    this.currentBranch = branch;
+    this.currentCommit = branch.current;
+  }
+
+  checkoutToCommit(commit: Commit) {
+    this.currentCommit = commit;
   }
 }
 
