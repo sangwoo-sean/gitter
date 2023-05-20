@@ -21,18 +21,20 @@ export default function GitGraph(props: GitGraphProps) {
   return (
     <Styled>
       <LeftGraph>
-        {leftGraph.reverse().map(([commit_l, commit_r], index) => (
+        {leftGraph.reverse().map((commits, index) => (
           <tr key={index}>
-            <StyledTd>{drawCommit(commit_l)}</StyledTd>
-            <StyledTd>{drawCommit(commit_r)}</StyledTd>
+            {commits.map((commit, inner_index) => (
+              <StyledTd key={inner_index}>{drawCommit(commit)}</StyledTd>
+            ))}
           </tr>
         ))}
       </LeftGraph>
       <RightGraph>
-        {rightGraph.reverse().map(([commit_l, commit_r], index) => (
+        {rightGraph.reverse().map((commits, index) => (
           <tr key={index}>
-            <StyledTd>{drawCommit(commit_l)}</StyledTd>
-            <StyledTd>{drawCommit(commit_r)}</StyledTd>
+            {commits.map((commit, inner_index) => (
+              <StyledTd key={inner_index}>{drawCommit(commit)}</StyledTd>
+            ))}
           </tr>
         ))}
       </RightGraph>
